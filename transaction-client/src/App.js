@@ -12,6 +12,7 @@ function App() {
   const [data, setData] = useState([]);
   let compressedData = [];
   let ignore = {};
+  const downloadBtn = useRef();
 
   const inverseTrans = () => {
     if (transactions.length) {
@@ -46,8 +47,15 @@ function App() {
 
   useEffect(() => {
     inverseTrans(transactions);
-    compressData();
   }, [transactions])
+
+  useEffect(() => {
+    if (data.length) {
+      setTimeout(() => {
+        downloadBtn.current.link.click();
+      }, 1);
+    }
+  }, [data])
 
   const compressData = async () => {
     compressedData = [];
@@ -99,9 +107,10 @@ function App() {
           <button className="btn btn-light btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addTrans">Add New Transaction</button>
         </div>
         <div className="col-sm-2">
-          {/* <button className="btn btn-light btn-outline-secondary" onClick={compressData}>Compress Transactions</button> */}
+          <button className="btn btn-light btn-outline-secondary" onClick={compressData}>Compress Transactions</button>
           <CSVLink
-            className="btn btn-light btn-outline-secondary"
+            ref={downloadBtn}
+            className="btn btn-light btn-outline-secondary d-none"
             filename="transactions.csv"
             data={data}>Compress Transactions</CSVLink>
         </div>
